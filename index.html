@@ -1,0 +1,53 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>特選! 山梨グルメ - 山梨県オープンデータ活用アプリ</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script type="module">
+import { CSV } from "https://code4sabae.github.io/js/CSV.js";
+import { shuffle } from "https://code4sabae.github.io/js/shuffle.js";
+
+window.onload = async () => {
+    const csv = await CSV.fetch("https://code4sabae.github.io/yamanashinoshoku/yamanashinoshoku3.csv");
+    const data = CSV.toJSON(csv);
+    console.log(data);
+    const ss = [];
+    shuffle(data);
+    for (const d of data) {
+        const [ no, url, imgurl, name, area, desc ] = [ d["No."], d["「食べられる・買えるお店」URL"], d["写真URL"], d["名称"], d["地域"], d["説明文"] ];
+        const html = `
+          <div class="card">
+            <img class="bd-placeholder-img card-img-top" width="100%" src="${imgurl}">
+            <div class="card-body">
+              <h5 class="card-title">${name}</h5>
+              <p class="card-text">${desc}</p>
+              ${url.length ? `<a href="${url}" class="btn btn-primary">食べられる・買えるお店</a>` : ""}
+            </div>
+          </div>
+        `;
+        ss.push(html);
+    }
+    main.innerHTML = ss.join("");
+};
+</script>
+<body>
+<div class="jumbotron">
+  <h1 class="display-4">特選! 山梨グルメ</h1>
+  <p class="lead">山梨県による「特選 やまなしの食」オープンデータ活用アプリ</p>
+  <hr class="my-4">
+  <p>山梨県は、県内で受け継がれるl郷土料理のうち、特に次世代への継承に取り組んでいく郷土食等167品目を「やまなしの食」として認定するとともに、このうち代表的な47品目を「特選やまなしの食」に選定しました。山梨県が公開する「<a href=https://www.pref.yamanashi.jp/shokuhin-st/shokuiku/yamanashinoshoku_tokusen47_od.html>オープンデータ</a>」を活用してアプリにしたものです。(<a href="https://code4sabae.github.io/gourmet-yamanashi/">オープンソース on GitHub</a>)</p>
+  <a class="btn btn-primary btn-lg" href="https://www.pref.yamanashi.jp/shokuhin-st/shokuiku/yamanashinoshoku_tokusen47.html" role="button">Learn more</a>
+</div>
+
+<div id="main" class="card-columns m-3 bg-light"></div>
+
+<footer class="text-muted">
+  <div class="container">
+    <p>Design: <a href="https://getbootstrap.com/">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a></p>
+    <p>Data: CC BY <a href=https://www.pref.yamanashi.jp/shokuhin-st/shokuiku/yamanashinoshoku_tokusen47_od.html>山梨県／「特選やまなしの食」オープンデータ</a> → <a href=https://github.com/code4sabae/yamanashinoshoku/>写真付きCSV on GitHub</a></p>
+    <p>App: CC BY <a href="https://fukuno.jig.jp/3105">福野泰介の一日一創</a>, by <a href="https://twitter.com/taisukef">@taisukef</a></p>
+  </div>
+</footer>
+
+</body></html>
